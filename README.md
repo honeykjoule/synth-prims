@@ -1,2 +1,2 @@
-# prior-py
+# prior
 meow
