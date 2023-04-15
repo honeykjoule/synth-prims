@@ -1,13 +1,12 @@
 import os
 from dotenv import load_dotenv
-import openai
 
 load_dotenv()
 
-def load_api_key():
+def load_openai_api_key():
     OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+    assert OPENAI_API_KEY is not None, "OPENAI_API_KEY is not set"
     return OPENAI_API_KEY
 
 if __name__ == "__main__":
-    load_api_key()
-    print(load_api_key())
+    load_openai_api_key()
