@@ -1,7 +1,12 @@
 import openai
-from load_openai_api_key import load_openai_api_key
-from load_data_path import load_data_path
-from json_dump import json_dump
+from utils_env import load_openai_api_key, load_data_path
+from utils_json import json_dump
+
+def get_openai_models():
+    openai.api_key = load_openai_api_key()
+    models = openai.Model.list()
+    json_dump(models, "openai_models.json")
+    return models
 
 def get_openai_completion(
     model = "text-davinci-003",
@@ -43,6 +48,3 @@ def get_openai_completion(
     )
     # json_dump(response, "openai_completion.json")
     return response
-
-if __name__ == "__main__":
-    response = get_openai_completion(prompt = "Why did the chicken cross the road", max_tokens = 100)
