@@ -8,5 +8,12 @@ def json_dump(data, filename):
     with open(filename, 'w') as f:
         json.dump(data, f, indent=4)
 
+def json_load(filename):
+    data_path = load_data_path()
+    filename = os.path.join(data_path, filename.encode('utf-8'))
+    with open(filename, 'r') as f:
+        data = json.load(f)
+    return data
+
 # if __name__ == "__main__":
 #     json_dump("test", "test.json")

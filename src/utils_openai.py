@@ -48,3 +48,16 @@ def get_openai_completion(
     )
     # json_dump(response, "openai_completion.json")
     return response
+
+def get_openai_chat_completon(
+    model = "gpt-3.5-turbo",
+    messages = []
+):
+    openai.api_key = load_openai_api_key()
+    data_path = load_data_path()
+    response = openai.ChatCompletion.create(
+        model = model,
+        messages = messages
+    )
+    json_dump(response, "openai_chat_completion.json")
+    return response
