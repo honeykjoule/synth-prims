@@ -44,3 +44,5 @@ def create_new_tasks(
     The result of the last completed task: {completed_task} is: {result}"""
     response = get_openai_completion(prompt=prompt)
     return response
+
+    
