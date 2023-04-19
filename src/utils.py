@@ -1,7 +1,36 @@
+import os
+from dotenv import load_dotenv
+import json
 import openai
-from utils_env import load_openai_api_key, load_data_path
-from utils_json import json_dump
 
+
+# env
+def load_data_path():
+    output_path_str = os.getenv("DATA_PATH")
+    assert output_path_str is not None, "data_path is not set"
+    output_path_bytes = output_path_str.encode('utf-8')
+    return output_path_bytes
+
+def load_openai_api_key():
+    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+    assert OPENAI_API_KEY is not None, "OPENAI_API_KEY is not set"
+    return OPENAI_API_KEY
+
+# json
+def json_dump(data, filename):
+    data_path = load_data_path()
+    filename = os.path.join(data_path, filename.encode('utf-8'))
+    with open(filename, 'w') as f:
+        json.dump(data, f, indent=4)
+
+def json_load(filename):
+    data_path = load_data_path()
+    filename = os.path.join(data_path, filename.encode('utf-8'))
+    with open(filename, 'r') as f:
+        data = json.load(f)
+    return data
+
+# openai
 def get_openai_models():
     openai.api_key = load_openai_api_key()
     models = openai.Model.list()
