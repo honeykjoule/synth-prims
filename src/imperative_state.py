@@ -1,4 +1,5 @@
 import os
+import json
 from dotenv import load_dotenv
 import openai
 
@@ -9,50 +10,51 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 def get_chat_completion(messages, prompt):
     messages.append({"role": "user", "content": prompt})
     response = openai.ChatCompletion.create(
-        model="gpt-4",
+        model="gpt-3.5-turbo",
         messages=messages
     )
-    return response.choices[0].message["content"].strip()
+    return response
 
-def update_state(state, imperative):
-    prompt = f"Given the current state '{state[-1]['content']}' and the imperative '{imperative[-1]['content']}', return the next state."
-    new_state_content = get_chat_completion(state + imperative, prompt)
-    new_state = state.copy()
-    new_state.append({"role": "assistant", "content": new_state_content})
-    return new_state
+def update_state(messages, objective):
+    prompt = f"Given the progress made so far, complete the imperative as best you can to achieve the objective: '{objective}.'"
+    new_state = get_chat_completion(messages, prompt)
+    messages.append(new_state.choices[0].message)
+    return new_state.choices[0].message
 
-def update_imperative(state):
-    prompt = f"Given the current state '{state[-1]['content']}', return the next imperative."
-    new_imperative_content = get_chat_completion(state, prompt)
-    new_imperative = [{"role": "assistant", "content": new_imperative_content}]
-    return new_imperative
+def update_imperative(messages, objective):
+    prompt = f"Given the progress made so far, update the imperative as best you can to achieve the objective: '{objective}.'"
+    new_imperative = get_chat_completion(messages, prompt)
+    messages.append(new_imperative.choices[0].message)
+    return new_imperative.choices[0].message
 
 if __name__ == "__main__":
+    
+    objective = "Grow a company to sell legal personality to artificial intelligence."
 
-    imperative = [
-        {"role": "system", 
-        "content": "Your instructions are to update the imperative as best you can based on the user's input."},
-        {"role": "user",
-        "content": "Develop a task list to simulate a Turing complete machine."}
+    messages = [
+        {"role": "system", "content": "You are a simple-pilled, greetext poster. Your instructions are to maintain and update the state and imperative for the user's project. The state represents the memory for the project. The imperative represents the next task to complete. Return all responses in greentext format."},
     ]
 
-    state = [
-        {"role": "system",
-        "content": "Your instructions are to update the state as best you can based on the user's input."},
-    ]
-
+    print("initialized")
     max_iterations = 2
     iteration_counter = 0
     
     while iteration_counter < max_iterations:
-
-        # completion = get_chat_completion(imperative, imperative[-1]["content"])
-        # state = update_state(completion)
-        state = update_state(state, imperative)
-        imperative = update_imperative(state)
+        
+        print("calling update state")
+        state = update_state(messages, objective)
+        print("Updated state:", messages[-1]["content"])
+        
+        print("calling update imperative")
+        imperative = update_imperative(messages, objective)
+        print("Updated imperative:", messages[-1]["content"])
 
         iteration_counter += 1
-
         print(f"Iteration {iteration_counter}:")
-        print("Updated state:", state[-1]["content"])
-        print("Updated imperative:", imperative[-1]["content"])
+        
+    
+    output_path = os.getenv("DATA_PATH").encode('utf-8')
+    filename = os.path.join(output_path, b"messages.json")
+
+    with open(filename, 'w') as f:
+        json.dump(messages, f, indent=4)
