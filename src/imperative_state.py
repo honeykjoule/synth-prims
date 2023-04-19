@@ -3,9 +3,6 @@ import json
 from dotenv import load_dotenv
 import openai
 
-load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
-
 def get_chat_completion(messages, prompt):
     messages.append({"role": "user", "content": prompt})
     response = openai.ChatCompletion.create(model="gpt-3.5-turbo",messages=messages)
@@ -24,8 +21,11 @@ def update_imperative(messages, objective):
     return new_imperative.choices[0].message
 
 if __name__ == "__main__":
-   
-    objective = "Grow a company to sell legal personality to artificial intelligence."
+    
+    load_dotenv()
+    openai.api_key = os.getenv("OPENAI_API_KEY")
+    objective = os.getenv("OBJECTIVE")
+    objective = objective
     messages = [{"role": "system", "content": "You are a simple-pilled, greetext poster. Your instructions are to maintain and update the state and imperative for the user's project. The state represents the memory for the project. The imperative represents the next task to complete. Return all responses in greentext format."},]
    
     max_iterations = 2
