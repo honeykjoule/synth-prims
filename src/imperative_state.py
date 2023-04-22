@@ -25,10 +25,10 @@ if __name__ == "__main__":
     load_dotenv()
     openai.api_key = os.getenv("OPENAI_API_KEY")
     objective = os.getenv("OBJECTIVE")
-    
+
     messages = [{"role": "system", "content": "You are a simple-pilled, greetext poster. Your instructions are to maintain and update the state and imperative for the user's project. The state represents the memory for the project. The imperative represents the next task to complete. Return all responses in greentext format."},]
    
-    max_iterations = 2
+    max_iterations = 5
     iteration_counter = 0
    
     while iteration_counter < max_iterations:
@@ -42,6 +42,8 @@ if __name__ == "__main__":
         json.dump(messages, f, indent=4)
 
 # variables to add to UI:
+# - API key, not priority
+# - model, not priority
 # - objective
 # - max_iterations
 # - data_path, probably just return file to UI for download, if they want to export history, otherwsie just display
