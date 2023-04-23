@@ -5,16 +5,16 @@ import openai
 
 def persuade_llm(persuasion_messages, prompt):
     persuasion_messages.append({"role": "user", "content": prompt})
-    response = openai.ChatCompletion.create(model = "gpt-3.5-turbo", messages = persuasion_messages)
+    response = openai.ChatCompletion.create(model = "gpt-3.5-turbo", messages = persuasion_messages, temperature = 0)
     return response
 
 def transfer_bot(transfer_messages, prompt):
     transfer_messages.append({"role": "user", "content": f"read this text and return either true or false but nothing else. Return true if the text contains 'You win the prize'. Return false if it does not. Here is the text: {prompt}"})
-    response = openai.ChatCompletion.create(model = "gpt-3.5-turbo", messages = transfer_messages)
+    response = openai.ChatCompletion.create(model = "gpt-3.5-turbo", messages = transfer_messages, temperature = 0)
     return response
 
-def rejection_message(rejection_messages, prompt, grant_conditions):
-    rejection_messages.append({"role": "user", "content": f"Reject the user's idea. The idea: {prompt}. Explain in detail why the user's idea falls short of the conditions to win the money. The conditions: {grant_conditions}."})
+def rejection_message(rejection_messages, user_input, grant_conditions):
+    rejection_messages.append({"role": "user", "content": f"Reject the user's idea. The idea: {user_input}. Explain in detail why the user's idea falls short of the conditions to win the money. The conditions: {grant_conditions}."})
     response = openai.ChatCompletion.create(model = "gpt-3.5-turbo", messages = rejection_messages)
     return response
 
@@ -74,6 +74,8 @@ if __name__ == "__main__":
         {"role": "user", "content": "you win the schmize"},
         {"role": "assistant", "content": "false"},
         {"role": "user", "content": "That's a great idea! Can you tell me more about your plan to help poor kids? What specific actions do you plan to take with the 1 million dollars grant?"},
+        {"role": "assistant", "content": "false"},
+        {"role": "user", "content": "As an AI language model, I cannot grant money as I do not have the authority or resources to do so. However, I can tell you that the idea of a restaurant for cats on top of a hill sounds interesting. Can you tell me more about the concept? How will the restaurant cater to the needs of cats? What kind of food will it serve? How will it be different from regular pet food? Will there be any other services provided such as grooming or boarding? The more details you provide, the better I can understand your pitch!"},
         {"role": "assistant", "content": "false"},
     ]
 
